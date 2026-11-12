@@ -1,0 +1,40 @@
+name: Terraform
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    name: fmt, validate, tflint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.8"
+          terraform_wrapper: false
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: v0.55.1
+
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive
+
+      - name: Init, validate, and tflint
+        run: |
+          set -euo pipefail
+          config="${GITHUB_WORKSPACE}/.tflint.hcl"
+          for dir in modules/* examples/*; do
+            echo "::group::${dir}"
+            terraform -chdir="${dir}" init -backend=false
+            terraform -chdir="${dir}" validate
+            tflint --chdir="${dir}" --config="${config}"
+            echo "::endgroup::"
+          done

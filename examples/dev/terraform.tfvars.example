@@ -1,0 +1,24 @@
+# Copy to terraform.tfvars and replace the subscription ID before you plan or apply.
+subscription_id = "00000000-0000-0000-0000-000000000000"
+
+name_prefix    = "aip"
+environment    = "dev"
+unique_suffix  = "001"
+location       = "eastus"
+
+address_space                    = ["10.10.0.0/16"]
+databricks_public_subnet_prefix  = "10.10.0.0/24"
+databricks_private_subnet_prefix = "10.10.1.0/24"
+private_endpoint_subnet_prefix   = "10.10.2.0/24"
+
+log_retention_days                 = 30
+storage_replication_type           = "LRS"
+key_vault_purge_protection_enabled = false
+key_vault_soft_delete_days         = 7
+databricks_sku                     = "premium"
+# Easier local debugging of the workspace UI in non-production.
+databricks_public_network_access_enabled = true
+databricks_enable_private_endpoint       = false
+
+chat_deployment_name      = "chat"
+embedding_deployment_name = "embeddings"
